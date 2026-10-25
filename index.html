@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rick and Morty - Portal Multiversal de Personagens</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Explore todas as dimensões do multiverso de Rick and Morty! Consulte personagens, status de sobrevivência, origens e episódios consumindo a Rick and Morty API.">
+  <meta name="keywords" content="Rick and Morty, Rick Sanchez, Morty Smith, Multiverso, API, Personagens, Desenho, Animação">
+  <meta name="author" content="Multiverse Explorer">
+  <meta name="theme-color" content="#97ce4c">
+
+  <!-- Open Graph / Social Media -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Rick and Morty - Portal Multiversal">
+  <meta property="og:description" content="Descubra e filtre personagens de todas as realidades da série Rick and Morty.">
+  <meta property="og:image" content="https://rickandmortyapi.com/api/character/avatar/1.jpeg">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon (Portal Icon SVG Data URI) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2397ce4c'%3E%3Cpath d='M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-14a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm0 10a4 4 0 1 1 4-4 4 4 0 0 1-4 4z'/%3E%3C/svg%3E">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Animated Background: Rick Opening The Portal -->
+  <div class="animated-bg" aria-hidden="true">
+    <div class="bg-scene"></div>
+    <div class="portal-vortex-glow"></div>
+    <canvas id="cosmosCanvas"></canvas>
+    <div class="bg-vignette"></div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="#hero" class="brand-logo" aria-label="Voltar ao início">
+        <div class="logo-portal">
+          <span class="portal-ring"></span>
+          <span class="portal-core">🛸</span>
+        </div>
+        <div class="brand-text">
+          <span class="brand-title">RICK <span class="highlight">&amp;</span> MORTY</span>
+          <span class="brand-subtitle">DIMENSÃO C-137</span>
+        </div>
+      </a>
+
+      <div class="nav-actions">
+        <!-- Watch Seasons Official Streaming Button -->
+        <button id="watchBtn" class="watch-btn" title="Onde assistir as temporadas oficiais" aria-haspopup="dialog">
+          <span class="watch-icon">▶</span>
+          <span>Assistir Série</span>
+        </button>
+
+        <!-- Audio FX Toggle -->
+        <button id="soundToggleBtn" class="icon-btn" aria-label="Alternar efeitos sonoros" title="Ativar/Desativar Efeitos Sonoros">
+          <svg id="soundIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+          </svg>
+          <span class="btn-text">Efeitos Sonoros</span>
+        </button>
+
+        <!-- Random Character Teleport Button -->
+        <button id="randomCharBtn" class="portal-btn" title="Teleporte aleatório para um personagem">
+          <span class="portal-gun-icon">🔫</span>
+          <span>Teleporte Aleatório</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+      <div class="hero-container">
+        <div class="hero-badge">
+          <span class="badge-dot"></span> Wubba Lubba Dub Dub!
+        </div>
+        <h1 class="hero-title">
+          Explore o Multiverso de <br>
+          <span class="gradient-text">Rick and Morty</span>
+        </h1>
+
+        <!-- Streaming Quick Bar -->
+        <div class="hero-streaming-bar">
+          <button id="heroWatchBtn" class="hero-watch-trigger" title="Ver plataformas oficiais para assistir">
+            <span class="stream-play-icon">▶</span>
+            <span class="stream-text">Onde Assistir às Temporadas: <strong>Max &amp; Adult Swim</strong></span>
+            <span class="stream-badge">7 Temporadas Oficiais &nearr;</span>
+          </button>
+        </div>
+
+        <!-- Live Statistics Counter Bar -->
+        <div class="stats-grid" id="statsGrid">
+          <div class="stat-card">
+            <span class="stat-value" id="totalCharacters">826+</span>
+            <span class="stat-label">Personagens</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="totalLocations">126+</span>
+            <span class="stat-label">Locais / Dimensões</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="totalEpisodes">51+</span>
+            <span class="stat-label">Episódios Catalogados</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="favoriteCount">0</span>
+            <span class="stat-label">Favoritos Salvos</span>
+          </div>
+      </div>
+    </section>
+
+    <!-- Explorer Section -->
+    <section class="explorer-section" id="personagens">
+      <div class="section-container">
+        <!-- View Tabs: All vs Favorites -->
+        <div class="tabs-wrapper">
+          <div class="tabs-container" role="tablist">
+            <button id="tabAll" class="tab-btn active" role="tab" aria-selected="true" aria-controls="charactersGrid">
+              🌌 Todos os Personagens
+            </button>
+            <button id="tabFavorites" class="tab-btn" role="tab" aria-selected="false" aria-controls="charactersGrid">
+              ⭐ Favoritos na Mochila (<span id="favTabBadge">0</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Controls: Search & Filters -->
+        <div class="controls-panel" id="controlsPanel">
+          <!-- Search Input -->
+          <div class="search-box">
+            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              id="searchInput" 
+              placeholder="Buscar por nome (ex: Rick Sanchez, Pickle Rick, Birdperson)..." 
+              autocomplete="off"
+              aria-label="Buscar personagens por nome"
+            >
+            <button id="clearSearchBtn" class="clear-btn" aria-label="Limpar pesquisa" hidden>&times;</button>
+          </div>
+
+          <!-- Filter Dropdowns & Selects -->
+          <div class="filters-group">
+            <!-- Status Filter -->
+            <div class="filter-item">
+              <label for="statusFilter">Status Vital</label>
+              <div class="select-wrapper">
+                <select id="statusFilter" aria-label="Filtrar por status vital">
+                  <option value="">Todos os Status</option>
+                  <option value="alive">🟢 Vivo (Alive)</option>
+                  <option value="dead">🔴 Morto (Dead)</option>
+                  <option value="unknown">⚪ Desconhecido</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Species Filter -->
+            <div class="filter-item">
+              <label for="speciesFilter">Espécie</label>
+              <div class="select-wrapper">
+                <select id="speciesFilter" aria-label="Filtrar por espécie">
+                  <option value="">Todas as Espécies</option>
+                  <option value="Human">Humano</option>
+                  <option value="Alien">Alienígena</option>
+                  <option value="Humanoid">Humanoide</option>
+                  <option value="Robot">Robô</option>
+                  <option value="Poopybutthole">Poopybutthole</option>
+                  <option value="Mythological Creature">Criatura Mitológica</option>
+                  <option value="Animal">Animal</option>
+                  <option value="Cronenberg">Cronenberg</option>
+                  <option value="Disease">Doença / Parasita</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Gender Filter -->
+            <div class="filter-item">
+              <label for="genderFilter">Gênero</label>
+              <div class="select-wrapper">
+                <select id="genderFilter" aria-label="Filtrar por gênero">
+                  <option value="">Todos os Gêneros</option>
+                  <option value="female">Feminino</option>
+                  <option value="male">Masculino</option>
+                  <option value="genderless">Sem gênero</option>
+                  <option value="unknown">Desconhecido</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Reset Filters Button -->
+            <button id="resetFiltersBtn" class="reset-btn" title="Limpar todos os filtros">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Resetar</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Feedback / Active Filters Info -->
+        <div class="results-feedback" id="resultsFeedback">
+          <span id="resultsCount">Carregando dimensões...</span>
+        </div>
+
+
+        <!-- Character Cards Grid -->
+        <div class="characters-grid" id="charactersGrid" role="region" aria-live="polite">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Pagination Controls -->
+        <nav class="pagination-nav" id="paginationNav" aria-label="Navegação entre páginas de personagens">
+          <button id="firstPageBtn" class="page-btn" aria-label="Primeira página" title="Primeira página">
+            &laquo; Primeira
+          </button>
+          <button id="prevPageBtn" class="page-btn" aria-label="Página anterior" title="Página anterior">
+            &lsaquo; Anterior
+          </button>
+          <div class="page-numbers" id="pageNumbers">
+            <!-- Dynamic page numbers -->
+          </div>
+          <button id="nextPageBtn" class="page-btn" aria-label="Próxima página" title="Próxima página">
+            Próxima &rsaquo;
+          </button>
+          <button id="lastPageBtn" class="page-btn" aria-label="Última página" title="Última página">
+            Última &raquo;
+          </button>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <!-- Detailed Character Modal -->
+  <div id="characterModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="modalName" hidden>
+    <div class="modal-dialog">
+      <button id="modalCloseBtn" class="modal-close-btn" aria-label="Fechar janela de detalhes">&times;</button>
+      
+      <div class="modal-content" id="modalContent">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Streaming & Watch Seasons Modal -->
+  <div id="watchModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="watchModalTitle" hidden>
+    <div class="modal-dialog watch-dialog">
+      <button id="watchModalCloseBtn" class="modal-close-btn" aria-label="Fechar janela de transmissão">&times;</button>
+      
+      <div class="watch-modal-body">
+        <div class="watch-header">
+          <div class="watch-badge">
+            <span class="badge-dot"></span> Transmissão Oficial Licenciada
+          </div>
+          <h2 id="watchModalTitle" class="watch-title">Onde Assistir às Temporadas</h2>
+          <p class="watch-subtitle">
+            Conecte-se aos canais oficiais para assistir a todos os episódios de <em>Rick and Morty</em> com dublagem brasileira ou áudio original em alta definição.
+          </p>
+        </div>
+
+        <!-- Official Streaming Providers -->
+        <div class="streaming-platforms-grid">
+          <!-- Platform 1: Max (HBO Max) -->
+          <article class="platform-card platform-max">
+            <div class="platform-header">
+              <div class="platform-logo-badge max-logo">MAX</div>
+              <span class="platform-availability">Temporadas 1 a 7 Completas</span>
+            </div>
+            <h3 class="platform-name">Max (antiga HBO Max)</h3>
+            <p class="platform-desc">
+              Casa oficial de Rick and Morty no Brasil. Assista a todas as temporadas completas com dublagem brasileira e áudio original em 4K/HD.
+            </p>
+            <div class="platform-features">
+              <span class="p-chip">Dublado &amp; Legendado</span>
+              <span class="p-chip">Sem Cortes</span>
+              <span class="p-chip">Ultra HD</span>
+            </div>
+            <a 
+              href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="platform-link-btn max-btn"
+              data-provider="max"
+            >
+              <span>Assistir no Max</span>
+              <span class="external-arrow">&nearr;</span>
+            </a>
+          </article>
+
+          <!-- Platform 2: Adult Swim Oficial -->
+          <article class="platform-card platform-adultswim">
+            <div class="platform-header">
+              <div class="platform-logo-badge adultswim-logo">[adult swim]</div>
+              <span class="platform-availability">Canal Oficial Original</span>
+            </div>
+            <h3 class="platform-name">Adult Swim (Site Oficial)</h3>
+            <p class="platform-desc">
+              Portal original dos criadores Dan Harmon e Justin Roiland. Contém maratonas 24/7, episódios especiais e prévias da nova temporada.
+            </p>
+            <div class="platform-features">
+              <span class="p-chip">Transmissão 24/7</span>
+              <span class="p-chip">Conteúdo Exclusivo</span>
+              <span class="p-chip">Oficial Warner</span>
+            </div>
+            <a 
+              href="https://www.adultswim.com/videos/rick-and-morty" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="platform-link-btn adultswim-btn"
+              data-provider="adultswim"
+            >
+              <span>Acessar Adult Swim</span>
+              <span class="external-arrow">&nearr;</span>
+            </a>
+          </article>
+
+          <!-- Platform 3: JustWatch Guide -->
+          <article class="platform-card platform-justwatch">
+            <div class="platform-header">
+              <div class="platform-logo-badge justwatch-logo">JustWatch</div>
+              <span class="platform-availability">Guia em Tempo Real</span>
+            </div>
+            <h3 class="platform-name">Guia de Streaming Brasil</h3>
+            <p class="platform-desc">
+              Verifique em tempo real a disponibilidade de streaming, aluguel e compra de episódios no Brasil (Prime Video, Apple TV, Google Play).
+            </p>
+            <div class="platform-features">
+              <span class="p-chip">Preços &amp; Aluguel</span>
+              <span class="p-chip">Atualizado Hoje</span>
+              <span class="p-chip">Todas Plataformas</span>
+            </div>
+            <a 
+              href="https://www.justwatch.com/br/serie/rick-and-morty" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="platform-link-btn justwatch-btn"
+              data-provider="justwatch"
+            >
+              <span>Ver no JustWatch</span>
+              <span class="external-arrow">&nearr;</span>
+            </a>
+          </article>
+        </div>
+
+        <!-- Quick Season Direct Links -->
+        <div class="seasons-direct-section">
+          <h4 class="seasons-title">Atalhos por Temporada (Acesso Imediato)</h4>
+          <div class="seasons-pills-list">
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="1">Temporada 1 (11 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="2">Temporada 2 (10 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="3">Temporada 3 (10 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="4">Temporada 4 (10 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="5">Temporada 5 (10 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="6">Temporada 6 (10 Eps)</a>
+            <a href="https://play.max.com/show/ab553cdc-e15d-4597-b65f-bec9201fd2dd" target="_blank" rel="noopener noreferrer" class="season-pill" data-season="7">Temporada 7 (10 Eps)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="portal-core-sm">🌀</span>
+        <span class="footer-title">Rick and Morty Multiverse Explorer</span>
+      </div>
+      <p class="footer-copy">
+        Criado com HTML, CSS e JavaScript puro, consumindo dados abertos da 
+        <a href="https://rickandmortyapi.com/" target="_blank" rel="noopener noreferrer">The Rick and Morty API</a>.
+      </p>
+      <p class="footer-quote">
+        "Nobody exists on purpose. Nobody belongs anywhere. Everybody's gonna die. Come watch TV." — Morty Smith
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
